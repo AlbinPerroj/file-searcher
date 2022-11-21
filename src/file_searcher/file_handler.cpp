@@ -63,6 +63,69 @@ void file_handler::findMinAndMaxValue()
 	fin.close();
 }
 
+void file_handler::findMinAndMaxValueOne()
+{
+	ifstream fin;
+
+	fin.open(fileName);
+
+	bool valuesFlag = false;
+	bool variablesFlag = false;
+	string line;
+
+	while (getline(fin, line)) {
+		int lineSize = line.size();
+
+		if (line == "-VARIABLES-") {
+			variablesFlag = true;
+			continue;
+		}
+
+		if (line == "-VALUES-") {
+			variablesFlag = false;
+			valuesFlag = true;
+			continue;
+		}
+
+		if (variablesFlag) {
+			int equalPos = line.find_first_of('=', 0);
+
+			search_status status;
+			status.channel = line.substr(equalPos + 1, lineSize - equalPos);
+			int channelCode = stoi(line.substr(1, equalPos - 1));
+
+			searchStatus.insert(pair<int, search_status>(channelCode, status));
+		}
+
+		if (valuesFlag) {
+			int firstColon = line.find_first_of(':', 0);
+			int firstSemiColon = line.find_first_of(';', 0);
+			int lastSemiColon = line.find_last_of(';', lineSize);
+
+
+			int currentChannel = stoi(line.substr(1, firstColon - 1));
+			double currentValue = stod(line.substr(firstColon + 1, firstSemiColon - firstColon - 1));
+			string currentDateTime = line.substr(lastSemiColon + 1, lineSize - lastSemiColon);
+			
+			searchStatus.at(currentChannel).data.insert(make_pair(currentValue, currentDateTime));
+		}
+	}
+
+	fin.close();
+
+	for (int i = 0; i < searchStatus.size(); i++) {
+		search_status status = searchStatus.at(i);
+		auto min = status.data.begin();
+		status.minValue = min -> first;
+		status.minValueDate = min->second;
+		auto max = status.data.end();
+		status.maxValue = max->first;
+		status.maxValueDate = max->second;
+	}
+
+
+}
+
 void file_handler::writeSearchResultToFile() {
 	ofstream outf;
 	outf << fixed << setprecision(6);

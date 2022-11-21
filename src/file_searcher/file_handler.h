@@ -13,5 +13,6 @@ class file_handler
 		map<int, search_status> searchStatus;
 		
 		void findMinAndMaxValue();
+		void findMinAndMaxValueOne();
 		void writeSearchResultToFile();
 };
