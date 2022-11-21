@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+/src/file_searcher/.vs
+/src/file_searcher/out
