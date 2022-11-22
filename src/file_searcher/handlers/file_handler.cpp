@@ -67,7 +67,6 @@ void file_handler::findMinAndMaxValue()
 void file_handler::findMinAndMaxValueUsingMultimap()
 {
 	map<int, multimap<double, string, greater<double>>> data;
-	map<int, multimap<double, string, greater<double>>>::iterator dataItr;
 
 	ifstream fin;
 
@@ -119,14 +118,14 @@ void file_handler::findMinAndMaxValueUsingMultimap()
 
 	fin.close();
 
-	for (dataItr = data.begin(); dataItr != data.end(); dataItr++) {
-		search_status status = searchStatus.at(dataItr->first);
+	for (int i = 0; i < searchStatus.size(); i++) {
+		search_status status = searchStatus.at(i);
 
-		multimap<double, string>::iterator min = dataItr->second.begin();
+		auto min = data.at(0).begin();
 		status.minValue = min->first;
 		status.minValueDate = min->second;
 
-		multimap<double, string>::iterator max = dataItr->second.end();
+		auto max = data.at(0).begin();
 		status.maxValue = max->first;
 		status.maxValueDate = max->second;
 	}
