@@ -33,3 +33,6 @@
 
 /src/file_searcher/.vs
 /src/file_searcher/out
+/src/search-txt-file/obj
+/src/search-txt-file/bin
+/src/search-txt-file/.vs
