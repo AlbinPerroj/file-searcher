@@ -1,6 +1,7 @@
 #include "file_handler.h"
 #include <iomanip>
 #include <fstream>
+#include <vector>
 
 void file_handler::findMinAndMaxValue()
 {
@@ -15,12 +16,12 @@ void file_handler::findMinAndMaxValue()
 	while (getline(fin, line)) {
 		int lineSize = line.size();
 
-		if (line == "-VARIABLES-") {
+		if (line == variablesConst) {
 			variablesFlag = true;
 			continue;
 		}
 
-		if (line == "-VALUES-") {
+		if (line == valuesConst) {
 			variablesFlag = false;
 			valuesFlag = true;
 			continue;
@@ -63,8 +64,11 @@ void file_handler::findMinAndMaxValue()
 	fin.close();
 }
 
-void file_handler::findMinAndMaxValueOne()
+void file_handler::findMinAndMaxValueUsingMultimap()
 {
+	map<int, multimap<double, string, greater<double>>> data;
+	map<int, multimap<double, string, greater<double>>>::iterator dataItr;
+
 	ifstream fin;
 
 	fin.open(fileName);
@@ -76,12 +80,12 @@ void file_handler::findMinAndMaxValueOne()
 	while (getline(fin, line)) {
 		int lineSize = line.size();
 
-		if (line == "-VARIABLES-") {
+		if (line == variablesConst) {
 			variablesFlag = true;
 			continue;
 		}
 
-		if (line == "-VALUES-") {
+		if (line == valuesConst) {
 			variablesFlag = false;
 			valuesFlag = true;
 			continue;
@@ -95,6 +99,8 @@ void file_handler::findMinAndMaxValueOne()
 			int channelCode = stoi(line.substr(1, equalPos - 1));
 
 			searchStatus.insert(pair<int, search_status>(channelCode, status));
+
+			data.insert(make_pair(channelCode, multimap<double, string, greater<double>>()));
 		}
 
 		if (valuesFlag) {
@@ -107,18 +113,20 @@ void file_handler::findMinAndMaxValueOne()
 			double currentValue = stod(line.substr(firstColon + 1, firstSemiColon - firstColon - 1));
 			string currentDateTime = line.substr(lastSemiColon + 1, lineSize - lastSemiColon);
 			
-			searchStatus.at(currentChannel).data.insert(make_pair(currentValue, currentDateTime));
+			data.at(currentChannel).insert(make_pair(currentValue, currentDateTime));
 		}
 	}
 
 	fin.close();
 
-	for (int i = 0; i < searchStatus.size(); i++) {
-		search_status status = searchStatus.at(i);
-		auto min = status.data.begin();
-		status.minValue = min -> first;
+	for (dataItr = data.begin(); dataItr != data.end(); dataItr++) {
+		search_status status = searchStatus.at(dataItr->first);
+
+		multimap<double, string>::iterator min = dataItr->second.begin();
+		status.minValue = min->first;
 		status.minValueDate = min->second;
-		auto max = status.data.end();
+
+		multimap<double, string>::iterator max = dataItr->second.end();
 		status.maxValue = max->first;
 		status.maxValueDate = max->second;
 	}

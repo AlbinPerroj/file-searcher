@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.8)
 project ("file_searcher")
 
 # Add source to this project's executable.
-add_executable (file_searcher "file_searcher.cpp" "file_searcher.h" "file_handler.cpp" "file_handler.h" "search_status.cpp" "search_status.h")
+add_executable (file_searcher "file_searcher.cpp" "file_searcher.h" "handlers/file_handler.cpp" "handlers/file_handler.h" "models/search_status.cpp" "models/search_status.h"   )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET file_searcher PROPERTY CXX_STANDARD 20)

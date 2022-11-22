@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
-#include "search_status.h"
+#include "../models/search_status.h"
 
 using namespace std;
 
@@ -13,6 +13,11 @@ class file_handler
 		map<int, search_status> searchStatus;
 		
 		void findMinAndMaxValue();
-		void findMinAndMaxValueOne();
+		void findMinAndMaxValueUsingMultimap();
 		void writeSearchResultToFile();
+
+	private:
+		string valuesConst = "-VALUES-";
+		string variablesConst = "-VARIABLES-";
+
 };
